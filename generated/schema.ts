@@ -15,8 +15,6 @@ export class Factory extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
-
-    this.set("owner", Value.fromString(""));
   }
 
   save(): void {
@@ -59,9 +57,6 @@ export class UnderlyingToken extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
-
-    this.set("name", Value.fromString(""));
-    this.set("decimals", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -113,9 +108,6 @@ export class RateOracle extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
-
-    this.set("protocolId", Value.fromBigInt(BigInt.zero()));
-    this.set("token", Value.fromString(""));
   }
 
   save(): void {
@@ -161,14 +153,146 @@ export class RateOracle extends Entity {
   set token(value: string) {
     this.set("token", Value.fromString(value));
   }
+
+  get minSecondsSinceLastUpdate(): BigInt {
+    let value = this.get("minSecondsSinceLastUpdate");
+    return value!.toBigInt();
+  }
+
+  set minSecondsSinceLastUpdate(value: BigInt) {
+    this.set("minSecondsSinceLastUpdate", Value.fromBigInt(value));
+  }
+
+  get rateCardinalityNext(): i32 {
+    let value = this.get("rateCardinalityNext");
+    return value!.toI32();
+  }
+
+  set rateCardinalityNext(value: i32) {
+    this.set("rateCardinalityNext", Value.fromI32(value));
+  }
+
+  get rateOracleUpdateCount(): BigInt {
+    let value = this.get("rateOracleUpdateCount");
+    return value!.toBigInt();
+  }
+
+  set rateOracleUpdateCount(value: BigInt) {
+    this.set("rateOracleUpdateCount", Value.fromBigInt(value));
+  }
+
+  get rateUpdates(): Array<string> {
+    let value = this.get("rateUpdates");
+    return value!.toStringArray();
+  }
+
+  set rateUpdates(value: Array<string>) {
+    this.set("rateUpdates", Value.fromStringArray(value));
+  }
+}
+
+export class RateOracleUpdate extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save RateOracleUpdate entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save RateOracleUpdate entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("RateOracleUpdate", id.toString(), this);
+    }
+  }
+
+  static load(id: string): RateOracleUpdate | null {
+    return changetype<RateOracleUpdate | null>(
+      store.get("RateOracleUpdate", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get rateOracle(): string {
+    let value = this.get("rateOracle");
+    return value!.toString();
+  }
+
+  set rateOracle(value: string) {
+    this.set("rateOracle", Value.fromString(value));
+  }
+
+  get updateTimestamp(): BigInt {
+    let value = this.get("updateTimestamp");
+    return value!.toBigInt();
+  }
+
+  set updateTimestamp(value: BigInt) {
+    this.set("updateTimestamp", Value.fromBigInt(value));
+  }
+
+  get observationIndex(): i32 {
+    let value = this.get("observationIndex");
+    return value!.toI32();
+  }
+
+  set observationIndex(value: i32) {
+    this.set("observationIndex", Value.fromI32(value));
+  }
+
+  get blockTimestamp(): BigInt {
+    let value = this.get("blockTimestamp");
+    return value!.toBigInt();
+  }
+
+  set blockTimestamp(value: BigInt) {
+    this.set("blockTimestamp", Value.fromBigInt(value));
+  }
+
+  get resultRay(): BigInt {
+    let value = this.get("resultRay");
+    return value!.toBigInt();
+  }
+
+  set resultRay(value: BigInt) {
+    this.set("resultRay", Value.fromBigInt(value));
+  }
+
+  get cardinality(): i32 {
+    let value = this.get("cardinality");
+    return value!.toI32();
+  }
+
+  set cardinality(value: i32) {
+    this.set("cardinality", Value.fromI32(value));
+  }
+
+  get cardinalityNext(): i32 {
+    let value = this.get("cardinalityNext");
+    return value!.toI32();
+  }
+
+  set cardinalityNext(value: i32) {
+    this.set("cardinalityNext", Value.fromI32(value));
+  }
 }
 
 export class MarginEngine extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
-
-    this.set("amm", Value.fromString(""));
   }
 
   save(): void {
@@ -205,14 +329,230 @@ export class MarginEngine extends Entity {
   set amm(value: string) {
     this.set("amm", Value.fromString(value));
   }
+
+  get mcpCount(): BigInt {
+    let value = this.get("mcpCount");
+    return value!.toBigInt();
+  }
+
+  set mcpCount(value: BigInt) {
+    this.set("mcpCount", Value.fromBigInt(value));
+  }
+
+  get marginCalculatorParameters(): string {
+    let value = this.get("marginCalculatorParameters");
+    return value!.toString();
+  }
+
+  set marginCalculatorParameters(value: string) {
+    this.set("marginCalculatorParameters", Value.fromString(value));
+  }
+}
+
+export class MarginCalculatorParameters extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id != null,
+      "Cannot save MarginCalculatorParameters entity without an ID"
+    );
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save MarginCalculatorParameters entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("MarginCalculatorParameters", id.toString(), this);
+    }
+  }
+
+  static load(id: string): MarginCalculatorParameters | null {
+    return changetype<MarginCalculatorParameters | null>(
+      store.get("MarginCalculatorParameters", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get apyUpperMultiplierWad(): BigInt {
+    let value = this.get("apyUpperMultiplierWad");
+    return value!.toBigInt();
+  }
+
+  set apyUpperMultiplierWad(value: BigInt) {
+    this.set("apyUpperMultiplierWad", Value.fromBigInt(value));
+  }
+
+  get apyLowerMultiplierWad(): BigInt {
+    let value = this.get("apyLowerMultiplierWad");
+    return value!.toBigInt();
+  }
+
+  set apyLowerMultiplierWad(value: BigInt) {
+    this.set("apyLowerMultiplierWad", Value.fromBigInt(value));
+  }
+
+  get sigmaSquaredWad(): BigInt {
+    let value = this.get("sigmaSquaredWad");
+    return value!.toBigInt();
+  }
+
+  set sigmaSquaredWad(value: BigInt) {
+    this.set("sigmaSquaredWad", Value.fromBigInt(value));
+  }
+
+  get alphaWad(): BigInt {
+    let value = this.get("alphaWad");
+    return value!.toBigInt();
+  }
+
+  set alphaWad(value: BigInt) {
+    this.set("alphaWad", Value.fromBigInt(value));
+  }
+
+  get betaWad(): BigInt {
+    let value = this.get("betaWad");
+    return value!.toBigInt();
+  }
+
+  set betaWad(value: BigInt) {
+    this.set("betaWad", Value.fromBigInt(value));
+  }
+
+  get xiUpperWad(): BigInt {
+    let value = this.get("xiUpperWad");
+    return value!.toBigInt();
+  }
+
+  set xiUpperWad(value: BigInt) {
+    this.set("xiUpperWad", Value.fromBigInt(value));
+  }
+
+  get xiLowerWad(): BigInt {
+    let value = this.get("xiLowerWad");
+    return value!.toBigInt();
+  }
+
+  set xiLowerWad(value: BigInt) {
+    this.set("xiLowerWad", Value.fromBigInt(value));
+  }
+
+  get tMaxWad(): BigInt {
+    let value = this.get("tMaxWad");
+    return value!.toBigInt();
+  }
+
+  set tMaxWad(value: BigInt) {
+    this.set("tMaxWad", Value.fromBigInt(value));
+  }
+
+  get devMulLeftUnwindLMWad(): BigInt {
+    let value = this.get("devMulLeftUnwindLMWad");
+    return value!.toBigInt();
+  }
+
+  set devMulLeftUnwindLMWad(value: BigInt) {
+    this.set("devMulLeftUnwindLMWad", Value.fromBigInt(value));
+  }
+
+  get devMulRightUnwindLMWad(): BigInt {
+    let value = this.get("devMulRightUnwindLMWad");
+    return value!.toBigInt();
+  }
+
+  set devMulRightUnwindLMWad(value: BigInt) {
+    this.set("devMulRightUnwindLMWad", Value.fromBigInt(value));
+  }
+
+  get devMulLeftUnwindIMWad(): BigInt {
+    let value = this.get("devMulLeftUnwindIMWad");
+    return value!.toBigInt();
+  }
+
+  set devMulLeftUnwindIMWad(value: BigInt) {
+    this.set("devMulLeftUnwindIMWad", Value.fromBigInt(value));
+  }
+
+  get devMulRightUnwindIMWad(): BigInt {
+    let value = this.get("devMulRightUnwindIMWad");
+    return value!.toBigInt();
+  }
+
+  set devMulRightUnwindIMWad(value: BigInt) {
+    this.set("devMulRightUnwindIMWad", Value.fromBigInt(value));
+  }
+
+  get fixedRateDeviationMinLeftUnwindLMWad(): BigInt {
+    let value = this.get("fixedRateDeviationMinLeftUnwindLMWad");
+    return value!.toBigInt();
+  }
+
+  set fixedRateDeviationMinLeftUnwindLMWad(value: BigInt) {
+    this.set("fixedRateDeviationMinLeftUnwindLMWad", Value.fromBigInt(value));
+  }
+
+  get fixedRateDeviationMinRightUnwindLMWad(): BigInt {
+    let value = this.get("fixedRateDeviationMinRightUnwindLMWad");
+    return value!.toBigInt();
+  }
+
+  set fixedRateDeviationMinRightUnwindLMWad(value: BigInt) {
+    this.set("fixedRateDeviationMinRightUnwindLMWad", Value.fromBigInt(value));
+  }
+
+  get fixedRateDeviationMinLeftUnwindIMWad(): BigInt {
+    let value = this.get("fixedRateDeviationMinLeftUnwindIMWad");
+    return value!.toBigInt();
+  }
+
+  set fixedRateDeviationMinLeftUnwindIMWad(value: BigInt) {
+    this.set("fixedRateDeviationMinLeftUnwindIMWad", Value.fromBigInt(value));
+  }
+
+  get fixedRateDeviationMinRightUnwindIMWad(): BigInt {
+    let value = this.get("fixedRateDeviationMinRightUnwindIMWad");
+    return value!.toBigInt();
+  }
+
+  set fixedRateDeviationMinRightUnwindIMWad(value: BigInt) {
+    this.set("fixedRateDeviationMinRightUnwindIMWad", Value.fromBigInt(value));
+  }
+
+  get gammaWad(): BigInt {
+    let value = this.get("gammaWad");
+    return value!.toBigInt();
+  }
+
+  set gammaWad(value: BigInt) {
+    this.set("gammaWad", Value.fromBigInt(value));
+  }
+
+  get minMarginToIncentiviseLiquidators(): BigInt {
+    let value = this.get("minMarginToIncentiviseLiquidators");
+    return value!.toBigInt();
+  }
+
+  set minMarginToIncentiviseLiquidators(value: BigInt) {
+    this.set("minMarginToIncentiviseLiquidators", Value.fromBigInt(value));
+  }
 }
 
 export class FCM extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
-
-    this.set("amm", Value.fromString(""));
   }
 
   save(): void {
@@ -255,19 +595,6 @@ export class AMM extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
-
-    this.set("createdTimestamp", Value.fromBigInt(BigInt.zero()));
-    this.set("fcm", Value.fromString(""));
-    this.set("marginEngine", Value.fromString(""));
-    this.set("rateOracle", Value.fromString(""));
-    this.set("tickSpacing", Value.fromBigInt(BigInt.zero()));
-    this.set("termStartTimestamp", Value.fromBigInt(BigInt.zero()));
-    this.set("termEndTimestamp", Value.fromBigInt(BigInt.zero()));
-    this.set("totalNotionalTraded", Value.fromBigInt(BigInt.zero()));
-    this.set("totalLiquidity", Value.fromBigInt(BigInt.zero()));
-    this.set("updatedTimestamp", Value.fromBigInt(BigInt.zero()));
-    this.set("tick", Value.fromBigInt(BigInt.zero()));
-    this.set("txCount", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -463,9 +790,6 @@ export class Wallet extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
-
-    this.set("positionCount", Value.fromBigInt(BigInt.zero()));
-    this.set("fcmPositionCount", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -535,23 +859,6 @@ export class Position extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
-
-    this.set("createdTimestamp", Value.fromBigInt(BigInt.zero()));
-    this.set("amm", Value.fromString(""));
-    this.set("owner", Value.fromString(""));
-    this.set("tickLower", Value.fromBigInt(BigInt.zero()));
-    this.set("tickUpper", Value.fromBigInt(BigInt.zero()));
-    this.set("updatedTimestamp", Value.fromBigInt(BigInt.zero()));
-    this.set("liquidity", Value.fromBigInt(BigInt.zero()));
-    this.set("margin", Value.fromBigInt(BigInt.zero()));
-    this.set("fixedTokenBalance", Value.fromBigInt(BigInt.zero()));
-    this.set("variableTokenBalance", Value.fromBigInt(BigInt.zero()));
-    this.set("accumulatedFees", Value.fromBigInt(BigInt.zero()));
-    this.set("totalNotionalTraded", Value.fromBigInt(BigInt.zero()));
-    this.set("sumOfWeightedFixedRate", Value.fromBigInt(BigInt.zero()));
-    this.set("positionType", Value.fromBigInt(BigInt.zero()));
-    this.set("isSettled", Value.fromBoolean(false));
-    this.set("snapshotCount", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -792,18 +1099,6 @@ export class PositionSnapshot extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
-
-    this.set("createdTimestamp", Value.fromBigInt(BigInt.zero()));
-    this.set("position", Value.fromString(""));
-    this.set("liquidity", Value.fromBigInt(BigInt.zero()));
-    this.set("margin", Value.fromBigInt(BigInt.zero()));
-    this.set("fixedTokenBalance", Value.fromBigInt(BigInt.zero()));
-    this.set("variableTokenBalance", Value.fromBigInt(BigInt.zero()));
-    this.set("accumulatedFees", Value.fromBigInt(BigInt.zero()));
-    this.set("totalNotionalTraded", Value.fromBigInt(BigInt.zero()));
-    this.set("sumOfWeightedFixedRate", Value.fromBigInt(BigInt.zero()));
-    this.set("positionType", Value.fromBigInt(BigInt.zero()));
-    this.set("isSettled", Value.fromBoolean(false));
   }
 
   save(): void {
@@ -938,11 +1233,6 @@ export class Transaction extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
-
-    this.set("amm", Value.fromString(""));
-    this.set("blockNumber", Value.fromBigInt(BigInt.zero()));
-    this.set("createdTimestamp", Value.fromBigInt(BigInt.zero()));
-    this.set("gasPrice", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -1066,12 +1356,6 @@ export class Mint extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
-
-    this.set("transaction", Value.fromString(""));
-    this.set("amm", Value.fromString(""));
-    this.set("position", Value.fromString(""));
-    this.set("sender", Value.fromString(""));
-    this.set("amount", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -1150,12 +1434,6 @@ export class Burn extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
-
-    this.set("transaction", Value.fromString(""));
-    this.set("amm", Value.fromString(""));
-    this.set("position", Value.fromString(""));
-    this.set("sender", Value.fromString(""));
-    this.set("amount", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -1234,17 +1512,6 @@ export class Swap extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
-
-    this.set("transaction", Value.fromString(""));
-    this.set("amm", Value.fromString(""));
-    this.set("position", Value.fromString(""));
-    this.set("sender", Value.fromString(""));
-    this.set("desiredNotional", Value.fromBigInt(BigInt.zero()));
-    this.set("sqrtPriceLimitX96", Value.fromBigInt(BigInt.zero()));
-    this.set("cumulativeFeeIncurred", Value.fromBigInt(BigInt.zero()));
-    this.set("fixedTokenDelta", Value.fromBigInt(BigInt.zero()));
-    this.set("variableTokenDelta", Value.fromBigInt(BigInt.zero()));
-    this.set("fixedTokenDeltaUnbalanced", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -1368,13 +1635,6 @@ export class Liquidation extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
-
-    this.set("transaction", Value.fromString(""));
-    this.set("amm", Value.fromString(""));
-    this.set("position", Value.fromString(""));
-    this.set("liquidator", Value.fromString(""));
-    this.set("reward", Value.fromBigInt(BigInt.zero()));
-    this.set("notionalUnwound", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -1462,11 +1722,6 @@ export class Settlement extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
-
-    this.set("transaction", Value.fromString(""));
-    this.set("amm", Value.fromString(""));
-    this.set("position", Value.fromString(""));
-    this.set("settlementCashflow", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -1536,12 +1791,6 @@ export class MarginUpdate extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
-
-    this.set("transaction", Value.fromString(""));
-    this.set("amm", Value.fromString(""));
-    this.set("position", Value.fromString(""));
-    this.set("depositer", Value.fromString(""));
-    this.set("marginDelta", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -1620,21 +1869,6 @@ export class FCMPosition extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
-
-    this.set("createdTimestamp", Value.fromBigInt(BigInt.zero()));
-    this.set("amm", Value.fromString(""));
-    this.set("owner", Value.fromString(""));
-    this.set("updatedTimestamp", Value.fromBigInt(BigInt.zero()));
-    this.set("fixedTokenBalance", Value.fromBigInt(BigInt.zero()));
-    this.set("variableTokenBalance", Value.fromBigInt(BigInt.zero()));
-    this.set(
-      "marginInScaledYieldBearingTokens",
-      Value.fromBigInt(BigInt.zero())
-    );
-    this.set("totalNotionalTraded", Value.fromBigInt(BigInt.zero()));
-    this.set("sumOfWeightedFixedRate", Value.fromBigInt(BigInt.zero()));
-    this.set("isSettled", Value.fromBoolean(false));
-    this.set("snapshotCount", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -1803,18 +2037,6 @@ export class FCMPositionSnapshot extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
-
-    this.set("createdTimestamp", Value.fromBigInt(BigInt.zero()));
-    this.set("fcmPosition", Value.fromString(""));
-    this.set("fixedTokenBalance", Value.fromBigInt(BigInt.zero()));
-    this.set("variableTokenBalance", Value.fromBigInt(BigInt.zero()));
-    this.set(
-      "marginInScaledYieldBearingTokens",
-      Value.fromBigInt(BigInt.zero())
-    );
-    this.set("totalNotionalTraded", Value.fromBigInt(BigInt.zero()));
-    this.set("sumOfWeightedFixedRate", Value.fromBigInt(BigInt.zero()));
-    this.set("isSettled", Value.fromBoolean(false));
   }
 
   save(): void {
@@ -1922,16 +2144,6 @@ export class FCMSwap extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
-
-    this.set("transaction", Value.fromString(""));
-    this.set("amm", Value.fromString(""));
-    this.set("fcmPosition", Value.fromString(""));
-    this.set("desiredNotional", Value.fromBigInt(BigInt.zero()));
-    this.set("sqrtPriceLimitX96", Value.fromBigInt(BigInt.zero()));
-    this.set("cumulativeFeeIncurred", Value.fromBigInt(BigInt.zero()));
-    this.set("fixedTokenDelta", Value.fromBigInt(BigInt.zero()));
-    this.set("variableTokenDelta", Value.fromBigInt(BigInt.zero()));
-    this.set("fixedTokenDeltaUnbalanced", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -2046,16 +2258,6 @@ export class FCMUnwind extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
-
-    this.set("transaction", Value.fromString(""));
-    this.set("amm", Value.fromString(""));
-    this.set("fcmPosition", Value.fromString(""));
-    this.set("desiredNotional", Value.fromBigInt(BigInt.zero()));
-    this.set("sqrtPriceLimitX96", Value.fromBigInt(BigInt.zero()));
-    this.set("cumulativeFeeIncurred", Value.fromBigInt(BigInt.zero()));
-    this.set("fixedTokenDelta", Value.fromBigInt(BigInt.zero()));
-    this.set("variableTokenDelta", Value.fromBigInt(BigInt.zero()));
-    this.set("fixedTokenDeltaUnbalanced", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -2170,11 +2372,6 @@ export class FCMSettlement extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
-
-    this.set("transaction", Value.fromString(""));
-    this.set("amm", Value.fromString(""));
-    this.set("fcmPosition", Value.fromString(""));
-    this.set("settlementCashflow", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
